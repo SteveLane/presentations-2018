@@ -14,12 +14,14 @@ output:
       ratio: "16:9"
 ---
 
-<!-- Time-stamp: <2018-05-30 12:51:01 (slane)> -->
+<!-- Time-stamp: <2018-05-30 15:06:44 (slane)> -->
 
 ```{r setup,echo=FALSE,warning=FALSE,message=FALSE,cache=FALSE,results="hide"}
 library(dplyr)
 knitr::opts_chunk$set(cache = FALSE, error = FALSE, warning = FALSE,
-                      message = FALSE, echo = TRUE)
+                      message = FALSE, echo = TRUE, out.width = "622px",
+                      out.height = "350px", dpi = 180, fig.align = "center",
+                      popup = TRUE, fig.asp = 9/16)
 options(digits = 2)
 
 ```
@@ -181,11 +183,162 @@ class: center, middle
 ![](img/no-worries.gif)
 
 ---
+class: inverse, center, middle
+background-image: 
+
+# Sample Size Calculations for Phytosanitary Testing of Small Lots of Seed
+
+---
+
+# The Problem
+
+
+Minimal infected material is required to transmit viruses and diseases, so we want to be *really* sure we detect contamination if present.
+
+- Common design parameters:
+  - $p=0.1\%$
+  - $S=0.95$
+
+<hr>
+
+--
+
+.bigr[
+Requires a sample size of approximately <span style="color:#f92672">3000</span>!
+]
+
+(from our previous discussion on sensitivity)
+
+---
+
+# The Problem
+
+.pull-left[
+![](img/small-seeds.jpg)
+]
+
+.pull-right[
+![](img/Bulk-cargo-shipping-m1.jpg)
+
+.footnote[
+
+.right[
+
+[StockCargo](http://www.stockcargo.eu/)
+
+]
+
+]
+
+]
+
+---
+
+# Focussing on the Line
+
+What if there's only 1500 seeds in the consignment?
+
+--
+
+We commonly appeal to the Hypergeometric distribution, $X \sim \text{Hypergeometric}(x, m, N, n)$.
+
+$$
+\begin{align}
+\Pr(X = x) & = \frac{{m \choose x} {{N-m} \choose {n-x}}}{{N \choose n}} \text{, for } x \in 0, 1, \ldots, \min\{m, n\}
+\end{align}
+$$
+
+Where $X$ is the number of contaminated seeds present in a sample of size $n$, that is drawn from a lot of size $N$ containing $m$ contaminated seeds.
+
+---
+
+# Example
+
+With design parameters and lot size:
+
+- $p=0.1\%$
+- $S=0.95$
+- $N=1500$
+
+we would *expect* there to be 1.5 contaminated seeds in the lot. .bigr[`r emo::ji("thinking")`]
+
+<hr>
+
+--
+
+It's common to *round down* so that we assume in fact we have 1 contaminated seed. This obviously changes our design prevalence; it is now `r formatC(1 / 1500 * 100, format = "f", digits = 2)`%.
+
+---
+
+# Non-monotone Behaviour of the Sample Size
+
+```{r non-monotone,echo=FALSE}
+library(ggplot2)
+nHyper <- function(prev, N, C){
+    m <- max(1, floor(prev*N))
+    k <- ceiling((1 - (1 - C)^(1/m)) * (N - (m - 1)/2))
+    k
+}
+N <- 1999:6000
+p <- 0.001
+n <- sapply(N, function(x) nHyper(p, x, 0.95))
+stepN <- function(n){
+    curN <- n[1]
+    limN <- curN
+    for(i in seq_along(n)[-1]){
+        if(n[i] >= curN){
+            curN <- n[i]
+        }
+        limN <- c(limN, curN)
+    }
+    limN
+}
+out <- stepN(n)
+## plot(N, n, type = "l", bty = "l")
+## lines(N, out, col = "purple")
+
+## Find points at which an integer number of contaminated seed are found
+frac <- MASS:::.rat(p)$rat
+N2 <- N * frac[, 1]
+mInt <- N[which((N2 %% frac[, 2]) == 0)] - 1
+nInt <- sapply(mInt, function(x) nHyper(p, x, 0.95))
+yInt <- xInt <- NULL
+for(i in seq_along(mInt)[-1]){
+    xout <- seq(mInt[(i - 1)], mInt[i], by = 1)
+    yout <- approx(mInt[(i - 1):i] - 1, nInt[(i - 1):i], xout = xout)
+    yInt <- c(yInt, yout$y)
+    xInt <- c(xInt, xout)
+}
+## lines(xInt, yInt, col = "green")
+comp <- tibble(N = c(N, N, xInt), n = c(n, out, yInt),
+               Method = factor(c(rep("Unadjusted", length(out)),
+                                 rep("Step", length(out)),
+                                 rep("Interpolation", length(yInt))),
+                               levels = c("Unadjusted", "Step",
+                                          "Interpolation")))
+plComp <- ggplot(comp, aes(x = N, y = n, colour = Method)) +
+    geom_line() +
+    theme_bw()
+print(plComp)
+
+```
+
+---
 class: center, middle
 
-![](img/abilities-vixens-lightning.png)
+# Are My Design Parameters Arbitrary... ?
 
-.logo-overlay[![](../assets/logos/fast-banana.svg)]
+![](img/jacky.gif)
+
+What if we choose a sample size to minimise some measure of risk?
+
+---
+
+# Leakage
+
+.center[
+<img src="img/flow.png" height="400"></img>
+]
 
 ---
 class: top, left

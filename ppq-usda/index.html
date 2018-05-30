@@ -18,7 +18,7 @@ class: center, middle, inverse, title-slide
 ---
 
 
-&lt;!-- Time-stamp: &lt;2018-05-30 12:51:01 (slane)&gt; --&gt;
+&lt;!-- Time-stamp: &lt;2018-05-30 15:06:25 (slane)&gt; --&gt;
 
 
 
@@ -179,11 +179,113 @@ class: center, middle
 ![](img/no-worries.gif)
 
 ---
+class: inverse, center, middle
+background-image: 
+
+# Sample Size Calculations for Phytosanitary Testing of Small Lots of Seed
+
+---
+
+# The Problem
+
+
+Minimal infected material is required to transmit viruses and diseases, so we want to be *really* sure we detect contamination if present.
+
+- Common design parameters:
+  - `\(p=0.1\%\)`
+  - `\(S=0.95\)`
+
+&lt;hr&gt;
+
+--
+
+.bigr[
+Requires a sample size of approximately &lt;span style="color:#f92672"&gt;3000&lt;/span&gt;!
+]
+
+(from our previous discussion on sensitivity)
+
+---
+
+# The Problem
+
+.pull-left[
+![](img/small-seeds.jpg)
+]
+
+.pull-right[
+![](img/Bulk-cargo-shipping-m1.jpg)
+
+.footnote[
+
+.right[
+
+[StockCargo](http://www.stockcargo.eu/)
+
+]
+
+]
+
+]
+
+---
+
+# Focussing on the Line
+
+What if there's only 1500 seeds in the consignment?
+
+--
+
+We commonly appeal to the Hypergeometric distribution, `\(X \sim \text{Hypergeometric}(x, m, N, n)\)`.
+
+$$
+`\begin{align}
+\Pr(X = x) &amp; = \frac{{m \choose x} {{N-m} \choose {n-x}}}{{N \choose n}} \text{, for } x \in 0, 1, \ldots, \min\{m, n\}
+\end{align}`
+$$
+
+Where `\(X\)` is the number of contaminated seeds present in a sample of size `\(n\)`, that is drawn from a lot of size `\(N\)` containing `\(m\)` contaminated seeds.
+
+---
+
+# Example
+
+With design parameters and lot size:
+
+- `\(p=0.1\%\)`
+- `\(S=0.95\)`
+- `\(N=1500\)`
+
+we would *expect* there to be 1.5 contaminated seeds in the lot. .bigr[🤔]
+
+&lt;hr&gt;
+
+--
+
+It's common to *round down* so that we assume in fact we have 1 contaminated seed. This obviously changes our design prevalence; it is now 0.07%.
+
+---
+
+# Non-monotone Behaviour of the Sample Size
+
+&lt;img src="index_files/figure-html/non-monotone-1.png" width="622px" height="350px" style="display: block; margin: auto;" /&gt;
+
+---
 class: center, middle
 
-![](img/abilities-vixens-lightning.png)
+# Are My Design Parameters Arbitrary... ?
 
-.logo-overlay[![](../assets/logos/fast-banana.svg)]
+![](img/jacky.gif)
+
+What if we choose a sample size to minimise some measure of risk?
+
+---
+
+# Leakage
+
+.center[
+&lt;img src="img/flow.png" height="350"&gt;&lt;/img&gt;
+]
 
 ---
 class: top, left
