@@ -18,10 +18,22 @@ class: center, middle, inverse, title-slide
 ---
 
 
-&lt;!-- Time-stamp: &lt;2018-05-30 15:06:25 (slane)&gt; --&gt;
+&lt;!-- Time-stamp: &lt;2018-05-31 08:04:36 (slane)&gt; --&gt;
 
 
 
+&lt;!-- Set fancy box in R --&gt;
+
+
+# Acknowledgements
+
+- Tony Arthur
+- Rob Cannon
+- Rose Souza Richards
+- Claire McDonald
+- Andrew Robinson
+
+---
 background-image: url(img/redpill-bluepill.jpeg)
 background-size: cover
 
@@ -268,7 +280,7 @@ It's common to *round down* so that we assume in fact we have 1 contaminated see
 
 # Non-monotone Behaviour of the Sample Size
 
-&lt;img src="index_files/figure-html/non-monotone-1.png" width="622px" height="350px" style="display: block; margin: auto;" /&gt;
+&lt;a href="index_files/figure-html/non-monotone-1.png" data-fancybox&gt;&lt;img src="index_files/figure-html/non-monotone-1.png" width="622px" height="350px" style="display: block; margin: auto;" /&gt;&lt;/a&gt;
 
 ---
 class: center, middle
@@ -284,25 +296,132 @@ What if we choose a sample size to minimise some measure of risk?
 # Leakage
 
 .center[
-&lt;img src="img/flow.png" height="350"&gt;&lt;/img&gt;
+&lt;img src="img/flow.png" height="400"&gt;&lt;/img&gt;
 ]
+
+---
+
+# What is the Expected Leakage?
+
+Intuitively, sometimes we select a sample that does not contain any contaminated seeds, *even though the consignment does*. This happens with probability `\(\Pr{}(X=0)\)`&lt;sup&gt;&amp;dagger;&lt;/sup&gt;.
+
+Sometimes, we do actually get some contaminated seeds in our sample; this happens with probability `\(\Pr{}(X&gt;0)\)`.
+
+.footnote[
+
+&lt;sup&gt;&amp;dagger;&lt;/sup&gt;Where `\(X\)` is the number of contaminated seed in the sample as we defined previously.
+
+]
+
+&lt;hr&gt;
+
+--
+
+If we **don't detect** any contaminated seeds, then `\(p \times (N - n)\)` contaminated will be &lt;span style="color:#f92672"&gt;leaked&lt;/span&gt; on average. If we **detect** some of the contaminated seeds, then 0 seeds are leaked (the whole consignment is rejected).
+
+Putting these together, the average number leaked is
+$$
+`\begin{align}
+p \times{} (N - n) \times{} \Pr{}(X=0)
+\end{align}`
+$$
+
+---
+
+# The Average Leakage Rate
+
+&lt;a href="index_files/figure-html/average-leakage-1.png" data-fancybox&gt;&lt;img src="index_files/figure-html/average-leakage-1.png" width="622px" height="350px" style="display: block; margin: auto;" /&gt;&lt;/a&gt;
+
+Leakage rate for lots of size `\(N=2500\)`, sample sizes of `\(n \in \{500, 600, \ldots, 1200\}\)`.
+
+---
+class: center, middle
+
+# So What?
+
+![](img/money.gif)
+
+---
+
+# Maximum Average Leakage Rate
+
+### How to set it?
+
+
+
+Suppose for a particular pathway there are 20 lots of 2500 seeds per year on average, and that a particular disease has a seed-to-seedling transmission rate of 19%. If contaminated, approximately `\(0.19 \times 20 \times 2500=9500\)` seeds would be capable of transmitting the disease if contaminated.
+
+Assume that we are willing to allow the possibility of at most `\(c=1\)` seed contaminated, to actually transmit the disease per year. We would thus set the maximum average leakage rate for the pathway at `\(1 / 9500 = 0.011\)`%.
+
+.footnote[
+This is clearly just one example of how a maximum average leakage rate could be set.
+]
+
+---
+
+# Choosing a Sample Size
+
+We can show that the maximum average leakage rate for sample size `\(n\)` and lot size `\(N\)` is
+$$
+`\begin{align}
+  \max E(a) &amp; = \frac{1}{n+1} \frac{N}{N - n} \left(1 - \frac{1}{n+1}\right)^{n}
+\end{align}`
+$$
+
+1. Set `\(n_{0} = 1\)`;
+2. Calculate `\(\max E(a) | n_{0}\)` (in the Equation above);
+3. Repeat the following until `\(\max E(a) | n_{k}\)` is less than the allowable leakage rate:
+  - Set `\(n_{k} = n_{k-1} + 1\)`;
+  - Calculate `\(\max E(a) | n_{k}\)`.
+4. Use `\(n_{k}\)` as calculated in Step 3 as the optimal sample size.
+
+---
+
+# Back to the Example
+
+Recall we said we'd be willing to allow the possibility of at most `\(c=1\)` seed contaminated, to actually transmit the disease per year, and our maximum average leakage rate was set at 0.011%. Assume we have an incoming lot of size 2500. Using the previous algorithm, we find that `\(n = 1458\)` should be sampled.
+
+&lt;a href="index_files/figure-html/example-leakage-1.png" data-fancybox&gt;&lt;img src="index_files/figure-html/example-leakage-1.png" width="622px" height="350px" style="display: block; margin: auto;" /&gt;&lt;/a&gt;
+
+---
+class: center, middle
+
+# Why is this Cool?
+
+## Two Reasons
+
+.bigr[
+&lt;span style="color:#f92672"&gt;Because the focus is on the whole pathway, not just a particular consignment,&lt;/span&gt;
+
+and
+
+&lt;span style="color:#f92672"&gt;Because it allows us to focus on impact, not convention.&lt;/span&gt;
+]
+
+---
+
+# Duality with Convention
+
+
+
+Of course, we could always turn this back in to a conventional setting. If the design contamination rate is 0.068%, then sampling 1458 seeds from a lot of 2500 has sensitivity 75.3% *for that particular lot*.
+
+&lt;a href="index_files/figure-html/example-duality-1.png" data-fancybox&gt;&lt;img src="index_files/figure-html/example-duality-1.png" width="622px" height="350px" style="display: block; margin: auto;" /&gt;&lt;/a&gt;
 
 ---
 class: top, left
 
-# Colophon
+# My Details
 
-&lt;i class="fa fa-twitter fa-2x" aria-hidden="true"&gt;&lt;/i&gt;.bigr[[@mytwitter](https://twitter.com/)]
+&lt;i class="fa fa-building fa-2x" aria-hidden="true"&gt;&lt;/i&gt;.bigr[[CEBRA](https://cebra.unimelb.edu.au/)]
 
-&lt;i class="fa fa-github fa-2x" aria-hidden="true"&gt;&lt;/i&gt;.bigr[[mygithub](https://github.com)]
+&lt;i class="fa fa-twitter fa-2x" aria-hidden="true"&gt;&lt;/i&gt;.bigr[[@stephenelane](https://twitter.com/stephenelane/)]
 
-&lt;i class="fa fa-user fa-2x" aria-hidden="true"&gt;&lt;/i&gt;.bigr[[https://www.example.com/](https://www.example.com/)]
+&lt;i class="fa fa-user fa-2x" aria-hidden="true"&gt;&lt;/i&gt;.bigr[[https://gtown-ds.netlify.com/](https://gtown-ds.netlify.com/)]
+
+&lt;i class="fa fa-github fa-2x" aria-hidden="true"&gt;&lt;/i&gt;.bigr[[SteveLane](https://github.com/SteveLane/)]
 
 &lt;/br&gt;
-
-.footnote[
-All views presented within are the author's only, and do not necessarily represent the views of the author.
-]
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({

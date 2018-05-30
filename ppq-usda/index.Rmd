@@ -14,18 +14,33 @@ output:
       ratio: "16:9"
 ---
 
-<!-- Time-stamp: <2018-05-30 15:06:44 (slane)> -->
+<!-- Time-stamp: <2018-05-31 08:04:36 (slane)> -->
 
 ```{r setup,echo=FALSE,warning=FALSE,message=FALSE,cache=FALSE,results="hide"}
 library(dplyr)
 knitr::opts_chunk$set(cache = FALSE, error = FALSE, warning = FALSE,
-                      message = FALSE, echo = TRUE, out.width = "622px",
+                      message = FALSE, echo = FALSE, out.width = "622px",
                       out.height = "350px", dpi = 180, fig.align = "center",
                       popup = TRUE, fig.asp = 9/16)
-options(digits = 2)
+options(digits = 3)
 
 ```
 
+<!-- Set fancy box in R -->
+```{r fancybox}
+source("../assets/R/.fancyBox.R")
+
+```
+
+# Acknowledgements
+
+- Tony Arthur
+- Rob Cannon
+- Rose Souza Richards
+- Claire McDonald
+- Andrew Robinson
+
+---
 background-image: url(img/redpill-bluepill.jpeg)
 background-size: cover
 
@@ -341,18 +356,199 @@ What if we choose a sample size to minimise some measure of risk?
 ]
 
 ---
-class: top, left
 
-# Colophon
+# What is the Expected Leakage?
 
-<i class="fa fa-twitter fa-2x" aria-hidden="true"></i>.bigr[[@mytwitter](https://twitter.com/)]
+Intuitively, sometimes we select a sample that does not contain any contaminated seeds, *even though the consignment does*. This happens with probability $\Pr{}(X=0)$<sup>&dagger;</sup>.
 
-<i class="fa fa-github fa-2x" aria-hidden="true"></i>.bigr[[mygithub](https://github.com)]
-
-<i class="fa fa-user fa-2x" aria-hidden="true"></i>.bigr[[https://www.example.com/](https://www.example.com/)]
-
-</br>
+Sometimes, we do actually get some contaminated seeds in our sample; this happens with probability $\Pr{}(X>0)$.
 
 .footnote[
-All views presented within are the author's only, and do not necessarily represent the views of the author.
+
+<sup>&dagger;</sup>Where $X$ is the number of contaminated seed in the sample as we defined previously.
+
 ]
+
+<hr>
+
+--
+
+If we **don't detect** any contaminated seeds, then $p \times (N - n)$ contaminated will be <span style="color:#f92672">leaked</span> on average. If we **detect** some of the contaminated seeds, then 0 seeds are leaked (the whole consignment is rejected).
+
+Putting these together, the average number leaked is
+$$
+\begin{align}
+p \times{} (N - n) \times{} \Pr{}(X=0)
+\end{align}
+$$
+
+---
+
+# The Average Leakage Rate
+
+```{r average-leakage,echo=FALSE}
+leakageRate <- function(p, N, n){
+    a <- (1 - p)^n * p * (N - n) / N
+    a
+}
+m0 <- floor(0.0015*2500)
+nEx1 <- ceiling((1 - (1 - 0.95)^(1/m0)) * (2500 - (m0 - 1)/2))
+p <- seq(0, 0.01, length = 501)
+apm <- leakageRate(p, 2500, nEx1)
+n <- seq(500, 1200, by = 100)
+pMat <- seq(0, 0.025, length = 501)
+apmMat <- sapply(n, function(x) leakageRate(pMat, 2500, x))
+yAt <- seq(0, 0.06 / 100, by = 0.01 / 100)
+yLab <- paste0(yAt * 100, " %")
+opar <- par(mar = c(5, 2, 4, 2) + 0.1, oma = c(0, 5, 0, 0))
+## plot(p, apm, type = "l", bty = "l", ylab = "",
+##      ylim = c(0, max(apmMat)), yaxt = "n")
+## axis(2, at = yAt, labels = yLab, las = 1)
+## title(ylab = "Leakage rate", outer = TRUE)
+matplot(pMat, apmMat, type = "l", lty = 1, col = "black",
+        xlim = c(0, 0.025), bty = "l", xlab = "p",
+        ylab = "Leakage rate", yaxt = "n",
+        ylim = c(0, max(apmMat)))
+axis(2, at = yAt, labels = yLab, las = 1)
+title(ylab = "Leakage rate", outer = TRUE)
+text(0.007, 0.0575 / 100, "n = 500", adj = 1)
+segments(0.005, 0.055 / 100, 0.004, 0.05 / 100)
+text(0.0001, 0, "n = 1200", adj = 0)
+segments(0.001, 0.00001, 0.0025, 0.005 / 100)
+par(opar)
+
+```
+
+Leakage rate for lots of size $N=2500$, sample sizes of $n \in \{500, 600, \ldots, 1200\}$.
+
+---
+class: center, middle
+
+# So What?
+
+![](img/money.gif)
+
+---
+
+# Maximum Average Leakage Rate
+
+### How to set it?
+
+```{r leakage-example}
+eml <- function(n, N) ((n / (n + 1))^n) / (n + 1) * (N - n) / N
+pcfvd <- (1/0.19) / 20 / 2500
+pcfvdN <- min(which(eml(1:(2500 - 1), 2500) < pcfvd))
+pcfvd2 <- (1/0.19) / 20 / 10000
+pcfvdN2 <- min(which(eml(1:(10000 - 1), 10000) < pcfvd2))
+
+```
+
+Suppose for a particular pathway there are 20 lots of 2500 seeds per year on average, and that a particular disease has a seed-to-seedling transmission rate of 19%. If contaminated, approximately $0.19 \times 20 \times 2500=`r 0.19*20*2500 `$ seeds would be capable of transmitting the disease if contaminated.
+
+Assume that we are willing to allow the possibility of at most $c=1$ seed contaminated, to actually transmit the disease per year. We would thus set the maximum average leakage rate for the pathway at $1 / 9500 = `r pcfvd * 100`$%.
+
+.footnote[
+This is clearly just one example of how a maximum average leakage rate could be set.
+]
+
+---
+
+# Choosing a Sample Size
+
+We can show that the maximum average leakage rate for sample size $n$ and lot size $N$ is
+$$
+\begin{align}
+  \max E(a) & = \frac{1}{n+1} \frac{N}{N - n} \left(1 - \frac{1}{n+1}\right)^{n}
+\end{align}
+$$
+
+1. Set $n_{0} = 1$;
+2. Calculate $\max E(a) | n_{0}$ (in the Equation above);
+3. Repeat the following until $\max E(a) | n_{k}$ is less than the allowable leakage rate:
+  - Set $n_{k} = n_{k-1} + 1$;
+  - Calculate $\max E(a) | n_{k}$.
+4. Use $n_{k}$ as calculated in Step 3 as the optimal sample size.
+
+---
+
+# Back to the Example
+
+Recall we said we'd be willing to allow the possibility of at most $c=1$ seed contaminated, to actually transmit the disease per year, and our maximum average leakage rate was set at `r pcfvd * 100`%. Assume we have an incoming lot of size 2500. Using the previous algorithm, we find that $n = `r pcfvdN`$ should be sampled.
+
+```{r example-leakage}
+apm2 <- leakageRate(p, 2500, pcfvdN)
+opar <- par(mar = c(5, 2, 4, 2) + 0.1, oma = c(0, 5, 0, 0))
+plot(p, apm2, type = "l", bty = "l", ylab = "", yaxt = "n")
+abline(h = pcfvd, col = "darkgreen", lty = 2)
+axis(2, at = yAt, labels = yLab, las = 1)
+title(ylab = "Leakage rate", outer = TRUE)
+par(opar)
+
+```
+
+---
+class: center, middle
+
+# Why is this Cool?
+
+## Two Reasons
+
+.bigr[
+<span style="color:#f92672">Because the focus is on the whole pathway, not just a particular consignment,</span>
+
+and
+
+<span style="color:#f92672">Because it allows us to focus on impact, not convention.</span>
+]
+
+---
+
+# Duality with Convention
+
+```{r duality-calcs}
+confHyper <- function (p, N, n) {
+    mL <- max(1, floor(p * N))
+    mU <- max(1, ceiling(p * N))
+    if (mL == mU) {
+        conf <- 1 - dhyper(0, mL, N - mL, n)
+    } else {
+        confL <- 1 - dhyper(0, mL, N - mL, n)
+        confU <- 1 - dhyper(0, mU, N - mU, n)
+        ## Linear interpolation
+        pU <- p * N - mL
+        pL <- 1 - pU
+        conf <- pL * confL + pU * confU
+    }
+    conf
+}
+pAPM <- p[which.max(apm2)]
+confAPM <- confHyper(pAPM, 2500, pcfvdN)
+
+```
+
+Of course, we could always turn this back in to a conventional setting. If the design contamination rate is `r pAPM * 100`%, then sampling `r pcfvdN` seeds from a lot of 2500 has sensitivity `r round(confAPM*100, 1)`% *for that particular lot*.
+
+```{r example-duality}
+plot(p, apm2, type = "l", bty = "l", ylab = "", yaxt = "n")
+abline(h = pcfvd, col = "darkgreen", lty = 2)
+abline(v = pAPM, col = "darkgreen", lty = 2)
+axis(2, at = yAt, labels = yLab, las = 1)
+title(ylab = "Leakage rate", outer = TRUE)
+par(opar)
+
+```
+
+---
+class: top, left
+
+# My Details
+
+<i class="fa fa-building fa-2x" aria-hidden="true"></i>.bigr[[CEBRA](https://cebra.unimelb.edu.au/)]
+
+<i class="fa fa-twitter fa-2x" aria-hidden="true"></i>.bigr[[@stephenelane](https://twitter.com/stephenelane/)]
+
+<i class="fa fa-user fa-2x" aria-hidden="true"></i>.bigr[[https://gtown-ds.netlify.com/](https://gtown-ds.netlify.com/)]
+
+<i class="fa fa-github fa-2x" aria-hidden="true"></i>.bigr[[SteveLane](https://github.com/SteveLane/)]
+
+</br>
