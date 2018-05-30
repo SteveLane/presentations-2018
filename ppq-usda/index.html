@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>One line, two lines; red line, blue line.</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Stephen E. Lane" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet", type="text/css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet", type="text/css">
+    <link rel="stylesheet" href="../assets/css/grey.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# One line, two lines; red line, blue line.
+### Stephen E. Lane
+
+---
+
+
+&lt;!-- Time-stamp: &lt;2018-05-30 12:51:01 (slane)&gt; --&gt;
+
+
+
+background-image: url(img/redpill-bluepill.jpeg)
+background-size: cover
+
+---
+class: inverse, center, middle
+background-image: 
+
+# Sampling From Multiple Lines
+
+---
+layout: true
+class: left, top
+background-image: url(../assets/logos/CEBRALogo-01.svg)
+background-size: 215px
+background-position: right top
+
+---
+
+# ISPM 31
+
+A lot to be sampled should be a number of units of a single commodity identifiable by its homogeneity in factors such as:
+
+.pull-left[
+- origin
+- grower
+- packing facility
+- species, variety, or degree of maturity
+- exporter
+]
+
+.pull-right[
+- area of production
+- regulated pests and their characteristics
+- treatment at origin
+- type of processing.
+]
+
+---
+
+# Heterogeneous Consignments
+
+.pull-left[
+![](img/VegCorn.jpg)
+&lt;!-- var rugosa --&gt;
+]
+
+.pull-right[
+![](img/800px-Corncobs.jpg)
+&lt;!-- var indurata --&gt;
+
+.footnote[
+
+.right[
+
+&lt;a rel="license" href="https://creativecommons.org/licenses/by-sa/2.0/"&gt;&lt;img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/2.0/80x15.png" /&gt;&lt;/a&gt; [Sam Fentress](https://commons.wikimedia.org/wiki/File:Corncobs.jpg)
+
+]
+
+]
+
+]
+
+---
+
+# The Regulator
+
+Suppose the regulator is happy to apply a compliance rule across an entire consignment. Then:
+
+- the *consignment* is compliant if the sample (across multiple lines) returns no contaminated items
+- if contaminated items are found, the *whole* consignment is rejected
+
+---
+class: center, middle
+
+# The Problem
+
+.bigr[
+How then, do we sample from each line, without making assumptions about individual line prevalences?
+]
+
+--
+
+# The Solution
+
+.bigr[
+&lt;span style="color:#f92672"&gt;By sampling proportional to the line volumes.&lt;/span&gt;
+]
+
+---
+
+# The Setup
+
+Assume there are `\(K\)` lines, with `\(N_{k}\)` units in the `\(k\)`&lt;sup&gt;th&lt;/sup&gt; line making a total of `\(N = \sum_{k} N_{k}\)` units. If the contamination rate in line `\(k\)` is `\(p_{k}\)` then the joint contamination rate, `\(p\)`, satisfies `\(\sum_{k} N_{k} p_{k} = N \cdot p\)`.
+
+Fix the total number of units sampled `\(n\)`, and choose some fixed weights `\(w_{k}\)` such that `\(\sum_k w_{k} = 1\)` and `\(n_{k} = n w_{k}\)`.
+
+The sensitivity of inspection is
+$$
+`\begin{align}
+  S = 1 - \prod_{k=1}^{K} (1 - p_{k}) ^ {n_{k}}
+\end{align}`
+$$
+
+---
+
+# The Line Prevalences
+
+With our sample size `\(n\)` and weights `\(w_{k}\)` fixed, we can find the line prevalences that will minimise the sensitivity as
+$$
+`\begin{align}
+  1 -  p_{k} = (1 - p) w_{k} \frac{N}{N_{k}}
+\end{align}`
+$$
+
+--
+
+&gt; Note: this is true for any set of fixed weights, and should alert you to what form the `\(w_{k}\)` should take!
+
+Thus, if we take our weights as proportional to the line volumes, sensitivity is *minimised* when all line prevalences are equal to the joint contamination rate `\(p\)`.
+
+---
+
+# The Sample
+
+Recall the sensitivity:
+$$
+`\begin{align}
+  S = 1 - \prod_{k=1}^{K} (1 - p_{k}) ^ {n_{k}}
+\end{align}`
+$$
+
+Substituting `\(p_{k} = p\)`, gives the familiar sample size formula:
+$$
+`\begin{align}
+  n = \log(1 - S) / \log(1 - p)
+\end{align}`
+$$
+
+Which we divvy up by sampling (at random) `\(n_{k} = n\frac{N_{k}}{N}\)` units from line `\(k\)`.
+
+---
+class: center, middle
+
+# Imperfect Detection
+
+.bigr[
+What about it?
+]
+
+---
+class: center, middle
+
+# No Worries
+
+![](img/no-worries.gif)
+
+---
+class: center, middle
+
+![](img/abilities-vixens-lightning.png)
+
+.logo-overlay[![](../assets/logos/fast-banana.svg)]
+
+---
+class: top, left
+
+# Colophon
+
+&lt;i class="fa fa-twitter fa-2x" aria-hidden="true"&gt;&lt;/i&gt;.bigr[[@mytwitter](https://twitter.com/)]
+
+&lt;i class="fa fa-github fa-2x" aria-hidden="true"&gt;&lt;/i&gt;.bigr[[mygithub](https://github.com)]
+
+&lt;i class="fa fa-user fa-2x" aria-hidden="true"&gt;&lt;/i&gt;.bigr[[https://www.example.com/](https://www.example.com/)]
+
+&lt;/br&gt;
+
+.footnote[
+All views presented within are the author's only, and do not necessarily represent the views of the author.
+]
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "dracula",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.20/jquery.fancybox.min.js"></script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
