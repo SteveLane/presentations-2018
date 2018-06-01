@@ -18,7 +18,7 @@ class: center, middle, inverse, title-slide
 ---
 
 
-&lt;!-- Time-stamp: &lt;2018-05-31 08:04:36 (slane)&gt; --&gt;
+&lt;!-- Time-stamp: &lt;2018-06-01 23:32:29 (slane)&gt; --&gt;
 
 
 
@@ -189,6 +189,27 @@ class: center, middle
 # No Worries
 
 ![](img/no-worries.gif)
+
+---
+class: left, top
+
+# Line-based Sensitivity
+
+We can just replace the line prevalences with `\(q_{k}=p_{k} s_{k}\)`:
+$$
+`\begin{align}
+  S = 1 - \prod_{k=1}^{K} (1 - q_{k}) ^ {n_{k}}
+\end{align}`
+$$
+
+Everything else works out, with weights and overall sensitivity adjusted for the imperfect detection:
+$$
+`\begin{align}
+  q &amp; = \frac{N p}{f} \\
+  w_{k} &amp; = \frac{n}{f} \frac{N_{k}}{s_{k}} \\
+  \text{where } f &amp; = \sum_{k}^{K} \frac{N_{k}}{s_{k}}
+\end{align}`
+$$
 
 ---
 class: inverse, center, middle
