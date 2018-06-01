@@ -1,6 +1,6 @@
 ---
 title: "One line, two lines; red line, blue line."
-author: "Stephen E. Lane"
+author: "Stephen E. Lane<br>CEBRA"
 output:
   xaringan::moon_reader:
     includes:
@@ -14,7 +14,7 @@ output:
       ratio: "16:9"
 ---
 
-<!-- Time-stamp: <2018-06-01 23:32:29 (slane)> -->
+<!-- Time-stamp: <2018-06-01 23:36:56 (slane)> -->
 
 ```{r setup,echo=FALSE,warning=FALSE,message=FALSE,cache=FALSE,results="hide"}
 library(dplyr)
@@ -33,6 +33,8 @@ source("../assets/R/.fancyBox.R")
 ```
 
 # Acknowledgements
+
+.logo-overlay[![](../assets/logos/CEBRALogo-01.svg)]
 
 - Tony Arthur
 - Rob Cannon
