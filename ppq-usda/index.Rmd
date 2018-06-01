@@ -14,7 +14,7 @@ output:
       ratio: "16:9"
 ---
 
-<!-- Time-stamp: <2018-06-01 23:45:59 (slane)> -->
+<!-- Time-stamp: <2018-06-01 23:48:11 (slane)> -->
 
 ```{r setup,echo=FALSE,warning=FALSE,message=FALSE,cache=FALSE,results="hide"}
 library(dplyr)
@@ -282,7 +282,7 @@ We commonly appeal to the Hypergeometric distribution, $X \sim \text{Hypergeomet
 
 $$
 \begin{align}
-\Pr(X = x) & = \frac{{{m \choose x}} {{N-m} \choose {{n-x}}}}{{{N \choose n}}} \text{, for } x \in 0, 1, \ldots, \min\{m, n\}
+\Pr(X = x) & = \frac{{{m \choose x}} {{{N-m}} \choose {{n-x}}}}{{{N \choose n}}} \text{, for } x \in 0, 1, \ldots, \min\{m, n\}
 \end{align}
 $$
 
