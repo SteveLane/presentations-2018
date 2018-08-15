@@ -23,6 +23,6 @@ background-position: right top
 class: center, middle
 
 <div style="width:100%;height:100%;">
-	<embed src="https://stevelane.github.io/presentations-2018/ibc-2018/ibc2018-lane.pdf#view=FitH" type="application/pdf" width="80%" height = "80%">
+	<embed src="https://stevelane.github.io/presentations-2018/ibc-2018/ibc2018-lane.pdf#view=FitH" type="application/pdf" width="80%" height="80%">
 	</embed>
 </div>
