@@ -1,0 +1,25 @@
+---
+title: "Risk Factors for Fouling Biomass: Evidence from Small Vessels in Australia"
+author: "Stephen E. Lane"
+output:
+  xaringan::moon_reader:
+    includes:
+      in_header: ../assets/partials/header.html
+      after_body: ../assets/partials/footer.html
+    css: ../assets/css/grey.css
+    nature:
+      highlightStyle: dracula
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+---
+layout: true
+class: left, top
+background-image: url(../assets/logos/CEBRALogo-01.svg)
+background-size: 215px
+background-position: right top
+
+---
+class: center, middle
+
+<embed src="https://stevelane.github.io/presentations-2018/ibc-2018/ibc2018-lane.pdf" type="application/pdf" />
