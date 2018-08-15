@@ -22,4 +22,4 @@ background-position: right top
 ---
 class: center, middle
 
-<embed src="https://stevelane.github.io/presentations-2018/ibc-2018/ibc2018-lane.pdf" type="application/pdf" />
+<embed src="https://stevelane.github.io/presentations-2018/ibc-2018/ibc2018-lane.pdf" type="application/pdf" width="1600px" height="900px" />
