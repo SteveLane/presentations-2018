@@ -206,6 +206,12 @@ tr:nth-child(even) {background-color: #A9A9A9}
     background-size: 120px;
 }
 
+/* Don't display slide number on title */
 .title-slide .remark-slide-number {
   display: none;
+}
+
+/* Reference slides */
+.references {
+    font-size: 75%;
 }
