@@ -211,6 +211,11 @@ tr:nth-child(even) {background-color: #A9A9A9}
   display: none;
 }
 
+/* Don't display slide number on certain slides */
+.slide-number-off .remark-slide-number {
+  display: none;
+}
+
 /* Reference slides */
 .references {
     font-size: 75%;
